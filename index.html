@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResQNet - Your Emergency Response Network</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Define primary color palette for a medical/urgent theme */
+            --primary-red: #E74C3C; /* Urgent/Emergency Red */
+            --primary-blue: #3498DB; /* Reliable/Medical Blue */
+            --secondary-dark: #2C3E50; /* Text/Background Dark */
+            --light-bg: #ECF0F1; /* Light Gray Background */
+            --white: #FFFFFF;
+            --text-light-gray: #666666; 
+            --border-light: #CCCCCC; 
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--secondary-dark);
+            line-height: 1.6;
+        }
+
+        /* Header & Logo */
+        header {
+            background-color: var(--secondary-dark);
+            color: var(--white);
+            padding: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        /* Logo Design */
+        .logo {
+            background-color: var(--primary-red);
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            margin-right: 20px;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 30px;
+            color: var(--white);
+        }
+
+        /* Navigation & State Selector Container */
+        .header-controls {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Navigation Links */
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 0 15px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--primary-red);
+        }
+
+        /* State/District Selector Styling for Header */
+        .header-selector-group {
+            margin-left: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-selector-group label {
+            color: var(--white);
+            font-size: 14px;
+            margin-right: 10px;
+            white-space: nowrap; 
+        }
+        
+        .header-selector-group select {
+            padding: 5px 8px;
+            border-radius: 4px;
+            border: none;
+            font-size: 14px;
+            background-color: var(--light-bg); 
+            color: var(--secondary-dark);
+            cursor: pointer;
+            width: 150px; 
+            margin-left: 10px; 
+        }
+        
+        /* Specific styling for the main location block */
+        .location-block {
+            display: flex;
+            align-items: center;
+        }
+
+        main {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Combined Hero Section */
+        .hero-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            flex-wrap: wrap; 
+        }
+
+        .hero-text {
+            flex: 2; 
+            min-width: 300px;
+            padding-right: 20px;
+        }
+        
+        .hero-text h1 {
+            margin-top: 0;
+            font-size: 36px;
+        }
+
+        .helpline-box-hero {
+            flex: 1; 
+            min-width: 250px;
+            background-color: var(--primary-red);
+            color: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .hero-section {
+                flex-direction: column;
+            }
+            .hero-text {
+                padding-right: 0;
+                margin-bottom: 20px;
+            }
+            .header-controls {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+            nav {
+                margin-bottom: 10px;
+            }
+            .header-selector-group {
+                margin-left: 0;
+                margin-top: 10px;
+                flex-direction: column;
+                align-items: flex-end;
+            }
+            .header-selector-group label, .header-selector-group select {
+                margin: 5px 0 0 0;
+            }
+        }
+        
+        /* Feature Grid/Icons */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--primary-blue); 
+        }
+        
+        /* Specific coloring for the most critical action (Helpline) */
+        .feature-card.helpline i,
+        .feature-card.blood i {
+            color: var(--primary-red); 
+        }
+        
+        .feature-card h3 {
+            margin-top: 0;
+            font-size: 18px;
+            color: var(--secondary-dark);
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-light-gray); 
+        }
+        
+        /* Smaller 112 Number Size */
+        .helpline-number {
+            font-size: 36px;
+            font-weight: bold;
+            display: block;
+            margin: 5px 0 5px; 
+            color: var(--white); 
+            text-decoration: none; 
+        }
+
+        .helpline-box-hero h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .helpline-box-hero h3 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 300;
+        }
+        
+        /* State Helpline Result Section */
+        .state-result-section {
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        /* Highlighting the automatic detection */
+        .state-result.detected {
+            background-color: #d4edda !important; /* Success/Greenish color */
+            color: #155724 !important;
+            border: 1px solid #c3e6cb !important;
+        }
+
+        .state-result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ffe8e8; /* Default Light Red/Pink */
+            border: 1px solid var(--primary-red);
+            border-radius: 5px;
+            text-align: center;
+            color: var(--primary-red);
+            transition: box-shadow 0.3s, transform 0.3s; 
+        }
+
+        .state-result:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .state-result span {
+            font-size: 24px;
+            font-weight: bold;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--secondary-dark);
+            color: var(--light-bg);
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+        
+        /* Styles for the District Selector in the header */
+        #district-select-container {
+            display: none; 
+            align-items: center;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body onload="getInitialLocation()">
+
+    <header>
+        <div class="logo-container">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                ResQNet
+            </div>
+            
+            <div class="header-controls">
+                <nav role="navigation">
+                    <a href="#features">Features</a>
+                    <a href="#helpline">Helpline</a>
+                </nav>
+
+                <div class="location-block">
+                    <div class="header-selector-group">
+                        <label for="state-select">Select State/UT:</label>
+                        <select id="state-select" onchange="handleStateChange()">
+                            <option value="">-- Select State/UT --</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Manipur">Manipur</option>
+                            <option value="Meghalaya">Meghalaya</option>
+                            <option value="Mizoram">Mizoram</option>
+                            <option value="Nagaland">Nagaland</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Sikkim">Sikkim</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tripura">Tripura</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                            <option value="Andaman and Nicobar Islands">A & N Islands</option>
+                            <option value="Chandigarh">Chandigarh</option>
+                            <option value="Dadra and Nagar Haveli and Daman and Diu">DNH & Daman & Diu</option>
+                            <option value="Delhi">NCT of Delhi</option>
+                            <option value="Jammu and Kashmir">J & K</option>
+                            <option value="Ladakh">Ladakh</option>
+                            <option value="Lakshadweep">Lakshadweep</option>
+                            <option value="Puducherry">Puducherry</option>
+                            <option value="general">General (100/101/108)</option>
+                        </select>
+                    </div>
+
+                    <div id="district-select-container" class="header-selector-group">
+                        <label for="district-select">Select District:</label>
+                        <select id="district-select" onchange="displayHelpline()">
+                            <option value="">-- Select District --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main role="main">
+        
+        <div class="hero-section">
+            <div class="hero-text">
+                <h1>Immediate Help in Critical Moments</h1>
+                <p>ResQNet connects you instantly to the resources you need for emergencies, providing reliable, data-driven assistance.</p>
+            </div>
+            
+            <div class="helpline-box-hero">
+                <h2>EMERGENCY - DIAL NOW!</h2>
+                <a href="tel:112" class="helpline-number">
+                    <i class="fas fa-phone-alt"></i> 112
+                </a>
+                <h3>(Universal Emergency Number)</h3>
+            </div>
+        </div>
+
+        <section id="features">
+            <h2>Key Emergency Features</h2>
+            <div class="feature-grid">
+
+                <div class="feature-card">
+                    <i class="fas fa-route"></i>
+                    <h3>Quick Route Map & Search</h3>
+                    <p>Provides the fastest, real-time traffic-adjusted route to the selected hospital via integrated mapping services. 
+                    <a href="https://www.google.com/maps/search/hospitals+near+me" style="color: var(--primary-blue); font-weight: bold;">(Open Map Search)</a></p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-hospital"></i>
+                    <h3>Our Trusted Hospitals</h3>
+                    <p>Find the best care facilities near you, filtered by specific symptoms, medical conditions, and quality ratings.</p>
+                </div>
+
+                <div class="feature-card blood">
+                    <i class="fas fa-tint"></i>
+                    <h3>Blood Availability & Donation</h3>
+                    <p>Locate the nearest blood banks, check real-time stock availability, and register as an emergency donor.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-briefcase-medical"></i>
+                    <h3>First Aid Guide</h3>
+                    <p>Quick access to essential, step-by-step instructions for immediate first aid before help arrives.</p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-user-md"></i>
+                    <h3>Specialist Availability</h3>
+                    <p>Check which nearby hospitals have the specific medical experts (e.g., Cardiologist, Orthopedic) on call.</p>
+                </div>
+
+                <div class="feature-card helpline" id="helpline">
+                    <i class="fas fa-headset"></i>
+                    <h3>State-Wise Helpline Directory</h3>
+                    <p>The local number for your selected region is displayed below.</p>
+                </div>
+
+            </div>
+        </section>
+        
+        <section class="state-result-section">
+            <div class="state-result" id="helpline-output">
+                Attempting to auto-detect your location...
+            </div>
+        </section>
+        
+    </main>
+
+    <footer>
+        © 2025 ResQNet | Designed for Rapid Emergency Response
+    </footer>
+
+    <script>
+        // --- DATA STRUCTURES ---
+
+        const helplineData = {
+            'Andhra Pradesh': '108 (Ambulance) / 100 (Police)',
+            'Arunachal Pradesh': '100 (Police) / 108 (Ambulance)',
+            'Assam': '108 (Ambulance) / 100 (Police)',
+            'Bihar': '112 (All-in-one) / 108',
+            'Chhattisgarh': '112 (All-in-one) / 108',
+            'Goa': '108 (Ambulance) / 100 (Police)',
+            'Gujarat': '108 (Ambulance) / 100 (Police)',
+            'Haryana': '100 (Police) / 108 (Ambulance)',
+            'Himachal Pradesh': '112 (All-in-one) / 108',
+            'Jharkhand': '108 (Ambulance) / 100 (Police)',
+            'Karnataka': '108 (Ambulance) / 100 (Police)',
+            'Kerala': '108 (Ambulance) / 100 (Police)',
+            'Madhya Pradesh': '108 (Ambulance) / 100 (Police)',
+            'Maharashtra': '108 (Ambulance) / 100 (Police)',
+            'Manipur': '100 (Police) / 108 (Ambulance)',
+            'Meghalaya': '100 (Police) / 108 (Ambulance)',
+            'Mizoram': '112 (All-in-one) / 108',
+            'Nagaland': '100 (Police) / 108 (Ambulance)',
+            'Odisha': '108 (Ambulance) / 100 (Police)',
+            'Punjab': '100 (Police) / 108 (Ambulance)',
+            'Rajasthan': '108 (Ambulance) / 100 (Police)',
+            'Sikkim': '112 (All-in-one) / 108',
+            'Tamil Nadu': '108 (Ambulance) / 100 (Police)',
+            'Telangana': '108 (Ambulance) / 100 (Police)',
+            'Tripura': '100 (Police) / 108 (Ambulance)',
+            'Uttar Pradesh': '112 (All-in-one) / 108',
+            'Uttarakhand': '112 (All-in-one) / 108',
+            'West Bengal': '108 (Ambulance) / 100 (Police)',
+            'Andaman and Nicobar Islands': '100 (Police) / 108 (Ambulance)',
+            'Chandigarh': '108 (Ambulance) / 100 (Police)',
+            'Dadra and Nagar Haveli and Daman and Diu': '100 (Police) / 108 (Ambulance)',
+            'Delhi': '100 (Police) / 108 (Ambulance)',
+            'Jammu and Kashmir': '112 (All-in-one) / 108',
+            'Ladakh': '100 (Police) / 108 (Ambulance)',
+            'Lakshadweep': '100 (Police) / 108 (Ambulance)',
+            'Puducherry': '108 (Ambulance) / 100 (Police)',
+            'general': '100 (Police) / 101 (Fire) / 108 (Ambulance)',
+            '': 'Please select a state/UT in the header to see the local emergency number.'
+        };
+        
+        // Comprehensive District Data
+        const districtData = {
+            'Jharkhand': [
+                'Bokaro', 'Chatra', 'Deoghar', 'Dhanbad', 'Dumka', 
+                'East Singhbhum (Jamshedpur)', 'Garhwa', 'Giridih', 'Godda', 'Gumla', 
+                'Hazaribagh', 'Jamtara', 'Khunti', 'Koderma', 'Latehar', 
+                'Lohardaga', 'Pakur', 'Palamu', 'Ramgarh', 'Ranchi', 
+                'Sahibganj', 'Seraikela-Kharsawan', 'Simdega', 'West Singhbhum (Chaibasa)'
+            ],
+            'Bihar': [
+                'Araria', 'Arwal', 'Aurangabad', 'Banka', 'Begusarai', 'Bhagalpur', 'Bhojpur', 
+                'Buxar', 'Darbhanga', 'East Champaran (Motihari)', 'Gaya', 'Gopalganj', 'Jamui', 
+                'Jehanabad', 'Kaimur', 'Katihar', 'Khagaria', 'Kishanganj', 'Lakhisarai', 
+                'Madhepura', 'Madhubani', 'Munger', 'Muzaffarpur', 'Nalanda', 'Nawada', 
+                'Patna', 'Purnia', 'Rohtas', 'Saharsa', 'Samastipur', 'Saran', 'Sheikhpura', 
+                'Sheohar', 'Sitamarhi', 'Siwan', 'Supaul', 'Vaishali', 'West Champaran'
+            ],
+            'Uttar Pradesh': [
+                'Agra', 'Aligarh', 'Ambedkar Nagar', 'Amethi', 'Amroha', 'Auraiya', 'Ayodhya', 
+                'Azamgarh', 'Baghpat', 'Bahraich', 'Ballia', 'Balrampur', 'Banda', 'Barabanki', 
+                'Bareilly', 'Basti', 'Bhadohi', 'Bijnor', 'Budaun', 'Bulandshahr', 'Chandauli', 
+                'Chitrakoot', 'Deoria', 'Etah', 'Etawah', 'Farrukhabad', 'Fatehpur', 'Firozabad', 
+                'Gautam Buddha Nagar (Noida)', 'Ghaziabad', 'Ghazipur', 'Gonda', 'Gorakhpur', 
+                'Hamirpur', 'Hapur', 'Hardoi', 'Hathras', 'Jalaun', 'Jaunpur', 'Jhansi', 
+                'Kannauj', 'Kanpur Dehat', 'Kanpur Nagar', 'Kasganj', 'Kaushambi', 'Kushinagar', 
+                'Lakhimpur Kheri', 'Lalitpur', 'Lucknow', 'Maharajganj', 'Mahoba', 'Mainpuri', 
+                'Mathura', 'Mau', 'Meerut', 'Mirzapur', 'Moradabad', 'Muzaffarnagar', 'Pilibhit', 
+                'Pratapgarh', 'Prayagraj (Allahabad)', 'Raebareli', 'Rampur', 'Saharanpur', 
+                'Sambhal', 'Sant Kabir Nagar', 'Shahjahanpur', 'Shamli', 'Shravasti', 
+                'Siddharthnagar', 'Sitapur', 'Sonbhadra', 'Sultanpur', 'Unnao', 'Varanasi'
+            ],
+            'Gujarat': [
+                'Ahmedabad', 'Amreli', 'Anand', 'Aravalli', 'Banaskantha', 'Bharuch', 'Bhavnagar', 
+                'Botad', 'Chhota Udaipur', 'Dahod', 'Dang', 'Devbhoomi Dwarka', 'Gandhinagar', 
+                'Gir Somnath', 'Jamnagar', 'Junagadh', 'Kheda', 'Kutch', 'Mahisagar', 'Mehsana', 
+                'Morbi', 'Narmada', 'Navsari', 'Panchmahal', 'Patan', 'Porbandar', 'Rajkot', 
+                'Sabarkantha', 'Surat', 'Surendranagar', 'Tapi', 'Vadodara', 'Valsad'
+            ],
+            'Delhi': [
+                'Central Delhi', 'East Delhi', 'New Delhi', 'North Delhi', 'North East Delhi', 
+                'North West Delhi', 'Shahdara', 'South Delhi', 'South East Delhi', 
+                'South West Delhi', 'West Delhi'
+            ],
+            'Maharashtra': [
+                'Mumbai City', 'Pune', 'Nagpur', 'Thane', 'Nashik', 'Aurangabad', 'Solapur', 
+                'Kolhapur', 'Raigad'
+            ],
+            'Tamil Nadu': [
+                'Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem', 'Tirunelveli', 
+                'Vellore', 'Kancheepuram'
+            ]
+        };
+
+        const districtHelplineOverrides = {
+            // --- JHARKHAND OVERRIDES ---
+            'Ramgarh': 'PCR: 06553-261555 / SP Office: 06553-222223 / Women: 181 / Amb: 108',
+            'Ranchi': '100 / 112 (All-in-one) / PCR: 0651-2211154',
+            'East Singhbhum (Jamshedpur)': '100 / 112 / PCR Jamshedpur: 0657-2209511',
+            'Dhanbad': '100 / 112 / PCR Dhanbad: 0326-2311217',
+            'Bokaro': '100 / 112 / PCR Bokaro: 06542-242226',
+            'Hazaribagh': '100 / 112 / PCR Hazaribagh: 06546-265177',
+            'Giridih': '100 / 112 / Control Room: 06532-228828',
+            'West Singhbhum (Chaibasa)': '100 / 112 / Control Room: 9576930051',
+            'Deoghar': '100 / 112 / PCR: 06432-232236',
+            'Palamu': '100 / 112 / Control Room: 06562-224422',
+            'Garhwa': '100 / 112 / Control Room: 06561-222226',
+            'Chatra': '100 / 112 / SP Office: 06541-223037',
+            
+            // --- BIHAR & UP MAJOR HUBS ---
+            'Patna': '100 / 112 / Patna Control Room: 0612-2219810',
+            'Lucknow': '112 / Lucknow Police Control: 9454400100',
+            'Prayagraj (Allahabad)': '100 / 112 / Control Room: 0532-2441600',
+            
+            // --- GUJARAT & DELHI MAJOR HUBS ---
+            'Ahmedabad': '100 / 108 / City Control: 079-25630100',
+            'New Delhi': '112 / 100 / Delhi Police HQ: 011-23014046',
+
+            // --- OTHER STATE OVERRIDES ---
+            'Mumbai City': '100 (Police) / 101 (Fire) / 108 (Ambulance) **OR** Mumbai Control: 022-22621855',
+            'Chennai': '100 (Police) / 101 (Fire) / 108 (Ambulance) **OR** Chennai Control: 044-23452055',
+            'Pune': '100 (Police) / 108 (Ambulance) / Pune City Police: 020-26122880'
+        }
+
+        // --- CORE VARIABLES ---
+        const defaultMessage = 'Please select a **State/UT** (and **District**, if available) in the header to see the local emergency number.';
+        
+        // --- DOM ELEMENTS ---
+        const stateSelect = document.getElementById('state-select');
+        const districtSelect = document.getElementById('district-select');
+        const districtContainer = document.getElementById('district-select-container');
+        const outputElement = document.getElementById('helpline-output');
+
+        // --- HELPER FUNCTION ---
+        function updateOutputStyle(type) {
+            outputElement.classList.remove('detected'); 
+            
+            if (type === 'detected') {
+                outputElement.classList.add('detected');
+                outputElement.style.backgroundColor = '#d4edda'; // Success/Greenish
+                outputElement.style.color = '#155724';
+                outputElement.style.border = '1px solid #c3e6cb';
+            } else if (type === 'error') {
+                outputElement.style.backgroundColor = '#f8d7da'; // Error/Reddish
+                outputElement.style.color = '#721c24';
+                outputElement.style.border = '1px solid #f5c6cb'; 
+            } else if (type === 'default') {
+                outputElement.style.backgroundColor = 'var(--light-bg)'; 
+                outputElement.style.color = 'var(--text-light-gray)'; 
+                outputElement.style.border = '1px solid var(--border-light)';
+            } else { // Manual selection
+                outputElement.style.backgroundColor = '#ffe8e8'; 
+                outputElement.style.color = 'var(--primary-red)';
+                outputElement.style.border = '1px solid var(--primary-red)';
+            }
+        }
+        
+        // --- EVENT HANDLERS ---
+        function handleStateChange() {
+            const selectedState = stateSelect.value;
+            // Explicitly reset district
+            districtSelect.value = ''; 
+            populateDistrictDropdown(selectedState);
+            displayHelpline(); 
+        }
+        
+        // --- MAIN LOGIC FUNCTIONS ---
+        
+        function populateDistrictDropdown(selectedState) {
+            // Clear previous options
+            districtSelect.innerHTML = '<option value="">-- Select District --</option>';
+
+            if (districtData[selectedState]) {
+                districtContainer.style.display = 'flex'; 
+                districtData[selectedState].sort().forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district;
+                    option.textContent = district;
+                    districtSelect.appendChild(option);
+                });
+            } else {
+                districtContainer.style.display = 'none';
+                districtSelect.value = ''; 
+            }
+        }
+
+        function displayHelpline(selectedValue, isAutoDetected = false) {
+            const selectedState = selectedValue || stateSelect.value;
+            const selectedDistrict = districtSelect.value;
+            
+            // 3. No selection made
+            if (!selectedState) {
+                outputElement.innerHTML = defaultMessage;
+                updateOutputStyle('default');
+                return;
+            }
+
+            let helplineNumber = helplineData[selectedState] || helplineData['general'];
+            let displayRegion = selectedState;
+
+            // 1. Check for District Override 
+            if (selectedDistrict && districtHelplineOverrides[selectedDistrict]) {
+                helplineNumber = districtHelplineOverrides[selectedDistrict];
+                displayRegion = `${selectedDistrict}, ${selectedState}`;
+            }
+
+            // --- Update Output Block ---
+            if (isAutoDetected) {
+                outputElement.innerHTML = `✅ **Location Detected:** Showing helpline for **${displayRegion}**<br>Local Helpline(s): <span>${helplineNumber}</span>`;
+                updateOutputStyle('detected');
+            } else {
+                outputElement.innerHTML = `Local Helpline(s) for ${displayRegion}: <span>${helplineNumber}</span>`;
+                updateOutputStyle('manual');
+            }
+        }
+
+        // --- NORMALIZE HELPER ---
+        // Helper to map API return names (like "State of Bihar") to our Dropdown names ("Bihar")
+        function normalizeStateName(apiState) {
+            if (!apiState) return null;
+            
+            // Direct matches
+            let formattedState = apiState.trim();
+            
+            // Special mappings for API idiosyncrasies
+            const mappings = {
+                'NCT of Delhi': 'Delhi',
+                'National Capital Territory of Delhi': 'Delhi',
+                'Jammu & Kashmir': 'Jammu and Kashmir',
+                'Andaman & Nicobar Islands': 'Andaman and Nicobar Islands',
+                'Daman and Diu': 'Dadra and Nagar Haveli and Daman and Diu'
+            };
+
+            if (mappings[formattedState]) return mappings[formattedState];
+
+            // Loop through options to find partial match (e.g. "State of Bihar" includes "Bihar")
+            const options = Array.from(stateSelect.options).map(o => o.value);
+            for (let opt of options) {
+                if (formattedState.includes(opt)) {
+                    return opt;
+                }
+            }
+            return formattedState; // Return original if no match found (will fall back to general)
+        }
+        
+        /**
+         * Uses Geolocation API to find coordinates and fetches address from OSM Nominatim.
+         */
+        function getInitialLocation() {
+            outputElement.innerHTML = 'Attempting to auto-detect your location via GPS/Network...';
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        
+                        // Use OpenStreetMap Nominatim API for Reverse Geocoding (Free, no key required for low volume)
+                        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const address = data.address;
+                            const apiState = address.state;
+                            const apiDistrict = address.state_district || address.district || address.city; // Fallbacks
+                            
+                            const matchedState = normalizeStateName(apiState);
+
+                            if (matchedState && helplineData[matchedState]) {
+                                // 1. Set State
+                                stateSelect.value = matchedState;
+                                populateDistrictDropdown(matchedState);
+
+                                // 2. Try to match District
+                                if (apiDistrict && districtData[matchedState]) {
+                                    // Simple check if our list includes the API district name
+                                    const matchDist = districtData[matchedState].find(d => apiDistrict.includes(d));
+                                    if (matchDist) {
+                                        districtSelect.value = matchDist;
+                                    }
+                                }
+
+                                // 3. Display
+                                displayHelpline(matchedState, true);
+                            } else {
+                                throw new Error("State not found in directory");
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Geocoding failed", err);
+                            outputElement.innerHTML = '⚠️ **Auto-detection incomplete.**<br>Could not identify region name. Please select manually.';
+                            updateOutputStyle('error');
+                        });
+                    }, 
+                    error => {
+                        console.error("Geolocation Error:", error.code);
+                        let errorMessage = '⚠️ **Location Error.**<br>Fall back to manual selection.';
+                        if (error.code === 1) errorMessage = '❌ **Permission Denied.**<br>Enable location access for auto-detection.';
+                        outputElement.innerHTML = errorMessage;
+                        updateOutputStyle('error'); 
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            } else {
+                outputElement.innerHTML = `❌ **Geolocation not supported.**<br>Please select your region manually.`;
+                updateOutputStyle('error'); 
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+             if (stateSelect.value && districtData[stateSelect.value]) {
+                 districtContainer.style.display = 'flex';
+             }
+        });
+    </script>
+
+</body>
+</html>

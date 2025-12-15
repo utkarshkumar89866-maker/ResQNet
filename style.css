@@ -1,0 +1,303 @@
+<style>
+    :root {
+        /* Define primary color palette for a medical/urgent theme */
+        --primary-red: #E74C3C; /* Urgent/Emergency Red */
+        --primary-blue: #3498DB; /* Reliable/Medical Blue */
+        --secondary-dark: #2C3E50; /* Text/Background Dark */
+        --light-bg: #ECF0F1; /* Light Gray Background */
+        --white: #FFFFFF;
+        --text-light-gray: #666666; 
+        --border-light: #CCCCCC; 
+    }
+
+    /* Base Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--light-bg);
+        color: var(--secondary-dark);
+        line-height: 1.6;
+    }
+
+    /* Header & Logo */
+    header {
+        background-color: var(--secondary-dark);
+        color: var(--white);
+        padding: 20px 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: center;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+        width: 90%;
+        max-width: 1200px;
+    }
+
+    /* Logo Design (Rectangular Placeholder) */
+    .logo {
+        background-color: var(--primary-red);
+        color: var(--white);
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-size: 28px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        margin-right: 20px;
+    }
+
+    .logo i {
+        margin-right: 10px;
+        font-size: 30px;
+        color: var(--white);
+    }
+
+    /* Navigation & State Selector Container */
+    .header-controls {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Navigation Links */
+    nav a {
+        color: var(--white);
+        text-decoration: none;
+        padding: 0 15px;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+
+    nav a:hover {
+        color: var(--primary-red);
+    }
+
+    /* State/District Selector Styling for Header */
+    .header-selector-group {
+        margin-left: 20px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .header-selector-group label {
+        color: var(--white);
+        font-size: 14px;
+        margin-right: 10px;
+        white-space: nowrap; 
+    }
+    
+    .header-selector-group select {
+        padding: 5px 8px;
+        border-radius: 4px;
+        border: none;
+        font-size: 14px;
+        background-color: var(--light-bg); 
+        color: var(--secondary-dark);
+        cursor: pointer;
+        width: 150px; 
+        margin-left: 10px; 
+    }
+    
+    /* Specific styling for the main location block */
+    .location-block {
+        display: flex;
+        align-items: center;
+    }
+
+    main {
+        padding: 40px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Combined Hero Section */
+    .hero-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 40px;
+        flex-wrap: wrap; 
+    }
+
+    .hero-text {
+        flex: 2; 
+        min-width: 300px;
+        padding-right: 20px;
+    }
+    
+    .hero-text h1 {
+        margin-top: 0;
+        font-size: 36px;
+    }
+
+    .helpline-box-hero {
+        flex: 1; 
+        min-width: 250px;
+        background-color: var(--primary-red);
+        color: var(--white);
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Adjustments for smaller screens */
+    @media (max-width: 768px) {
+        .hero-section {
+            flex-direction: column;
+        }
+        .hero-text {
+            padding-right: 0;
+            margin-bottom: 20px;
+        }
+        .header-controls {
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        nav {
+            margin-bottom: 10px;
+        }
+        .header-selector-group {
+            margin-left: 0;
+            margin-top: 10px;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        .header-selector-group label, .header-selector-group select {
+            margin: 5px 0 0 0;
+        }
+    }
+    
+    /* Feature Grid/Icons */
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 30px;
+        margin-top: 30px;
+    }
+
+    .feature-card {
+        background-color: var(--white);
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-card i {
+        font-size: 48px;
+        margin-bottom: 15px;
+        color: var(--primary-blue); 
+    }
+    
+    /* Specific coloring for the most critical action (Helpline) */
+    .feature-card.helpline i,
+    .feature-card.blood i {
+        color: var(--primary-red); 
+    }
+    
+    /* Manual Damage Icon Coloring */
+    .feature-card.manual-damage i {
+        color: var(--primary-blue); 
+    }
+
+    .feature-card h3 {
+        margin-top: 0;
+        font-size: 18px;
+        color: var(--secondary-dark);
+    }
+
+    .feature-card p {
+        font-size: 14px;
+        color: var(--text-light-gray); 
+    }
+    
+    /* Smaller 112 Number Size */
+    .helpline-number {
+        font-size: 36px;
+        font-weight: bold;
+        display: block;
+        margin: 5px 0 5px; 
+        color: var(--white); 
+        text-decoration: none; 
+    }
+
+    .helpline-box-hero h2 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    
+    .helpline-box-hero h3 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 300;
+    }
+    
+    /* State Helpline Result Section */
+    .state-result-section {
+        margin: 20px auto;
+        max-width: 600px;
+        text-align: center;
+    }
+    
+    /* Highlighting the automatic detection */
+    .state-result.detected {
+        background-color: #d4edda !important; /* Success/Greenish color */
+        color: #155724 !important;
+        border: 1px solid #c3e6cb !important;
+    }
+
+    .state-result {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #ffe8e8; /* Default Light Red/Pink */
+        border: 1px solid var(--primary-red);
+        border-radius: 5px;
+        text-align: center;
+        color: var(--primary-red);
+        transition: box-shadow 0.3s, transform 0.3s; /* Added hover transition */
+    }
+
+    .state-result:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .state-result span {
+        font-size: 24px;
+        font-weight: bold;
+        display: block;
+        margin-top: 5px;
+    }
+
+    /* Footer */
+    footer {
+        background-color: var(--secondary-dark);
+        color: var(--light-bg);
+        text-align: center;
+        padding: 20px 0;
+        margin-top: 40px;
+        font-size: 14px;
+    }
+    
+    /* Styles for the District Selector in the header */
+    #district-select-container {
+        display: none; 
+        align-items: center;
+        margin-left: 20px;
+    }
+</style>
