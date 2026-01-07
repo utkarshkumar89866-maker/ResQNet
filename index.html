@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResQNet | AI Emergency Response</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* --- CORE VARIABLES & RESET --- */
+        :root {
+            --primary: #FF3B30; /* Emergency Red */
+            --dark: #1C1C1E;
+            --light: #F2F2F7;
+            --white: #FFFFFF;
+            --blue: #007AFF;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--light); color: var(--dark); overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
+        a { text-decoration: none; color: inherit; }
+        main { flex: 1; }
+
+        /* --- LAYOUT UTILITIES --- */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- NAVIGATION --- */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 10px 0; /* Reduced padding slightly for image fit */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Adjusted gap for positioning */
+        }
+        
+        /* --- NEW DESIGNER R LOGO STYLES --- */
+        .design-r-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), #d32f2f);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            border-radius: 14px; /* Smooth edges */
+            box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
+            /* New smooth animation */
+            animation: smooth-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes smooth-glow {
+            0%, 100% { box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3); transform: scale(1); }
+            50% { box-shadow: 0 8px 25px rgba(255, 59, 48, 0.6); transform: scale(1.05); }
+        }
+
+        .nav-links { display: flex; align-items: center; gap: 20px; }
+        .nav-links a { font-weight: 500; font-size: 0.9rem; }
+        
+        .btn-nav-emergency {
+            background: var(--primary);
+            color: white !important;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
+            transition: transform 0.2s;
+        }
+        .btn-nav-emergency:active { transform: scale(0.95); }
+
+        /* --- HERO SECTION --- */
+        .hero-section {
+            padding-top: 120px;
+            padding-bottom: 50px;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+        }
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Desktop: 2 columns */
+            gap: 40px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+        .highlight-text { color: var(--primary); }
+        .subtitle { color: #666; margin-bottom: 30px; font-size: 1.1rem; }
+        
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #E5F9E7;
+            color: #27ae60;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .status-dot { width: 8px; height: 8px; background: #27ae60; border-radius: 50%; }
+
+        /* --- LOCATION CARD --- */
+        .location-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: var(--blue);
+        }
+        .select-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .input-group label { display: block; font-size: 0.8rem; color: #888; margin-bottom: 5px; }
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            font-size: 0.9rem;
+        }
+        
+        .contact-result {
+            margin-top: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            border-left: 4px solid var(--primary);
+        }
+        .c-row { margin-bottom: 5px; font-size: 0.9rem; display: flex; justify-content: space-between;}
+
+        /* --- SOS BUTTON --- */
+        .sos-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+        }
+        .sos-circle {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, #FF3B30, #FF0000);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 59, 48, 0.4);
+            z-index: 2;
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-align: center;
+        }
+        .sos-circle:active { transform: scale(0.95); }
+        .sos-circle h3 { font-size: 0.9rem; opacity: 0.9; }
+        .sos-num { font-size: 3rem; font-weight: 800; line-height: 1; }
+        
+        .pulse-ring {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            opacity: 0;
+            animation: ripple 2s infinite;
+        }
+        .pulse-ring.delay { animation-delay: 0.5s; }
+
+        /* --- FEATURES GRID --- */
+        .features-section { padding: 50px 0 100px 0; }
+        .section-header { text-align: center; margin-bottom: 40px; }
+        .section-header h2 { font-size: 2rem; margin-bottom: 10px; }
+        
+        .grid-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        
+        .icon-box {
+            width: 50px; height: 50px;
+            margin: 0 auto 15px auto;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+        }
+        .icon-box.blue { background: #e3f2fd; color: #1e88e5; }
+        .icon-box.orange { background: #fff3e0; color: #fb8c00; }
+        .icon-box.purple { background: #f3e5f5; color: #8e24aa; }
+        .icon-box.green { background: #e8f5e9; color: #43a047; }
+        .icon-box.red { background: #ffebee; color: #e53935; }
+        
+        .feature-card h3 { font-size: 1rem; margin-bottom: 5px; }
+        .feature-card p { font-size: 0.8rem; color: #666; }
+        .active-card { border: 2px solid var(--blue); position: relative; }
+        .live-tag {
+            position: absolute; top: 10px; right: 10px;
+            background: #27ae60; color: white;
+            font-size: 0.6rem; padding: 2px 6px; border-radius: 4px;
+        }
+
+        /* --- NEW HIGHLIGHT FOOTER --- */
+        .brand-footer {
+            background: linear-gradient(135deg, #007AFF, #005ecb);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: auto; /* Pushes to bottom */
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        }
+        .brand-footer h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .brand-footer span {
+            color: #FF3B30; /* Red accent for dots */
+            margin: 0 10px;
+            font-size: 1.5rem;
+        }
+
+        /* --- CHAT INTERFACE --- */
+        .chat-float-btn {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            width: 60px; height: 60px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            z-index: 998;
+            transition: transform 0.3s;
+        }
+        .chat-float-btn img { width: 35px; }
+        .chat-float-btn:hover { transform: scale(1.1); }
+
+        .chat-interface {
+            position: fixed;
+            bottom: 100px; right: 30px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 999;
+            display: flex; flex-direction: column;
+            transform: translateY(20px); opacity: 0; pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+        .chat-interface.active { transform: translateY(0); opacity: 1; pointer-events: all; }
+        
+        .chat-header {
+            padding: 15px; border-bottom: 1px solid #eee;
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--blue); color: white; border-radius: 20px 20px 0 0;
+        }
+        .chat-meta { display: flex; align-items: center; gap: 10px; }
+        .chat-meta .avatar { width: 40px; height: 40px; background: white; border-radius: 50%; padding: 5px; }
+        .chat-meta img { width: 100%; }
+        .chat-header button { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9; }
+        .msg { margin-bottom: 10px; max-width: 80%; font-size: 0.9rem; }
+        .msg.bot { align-self: flex-start; margin-right: auto; }
+        .msg.bot .txt { background: white; padding: 10px 15px; border-radius: 0 15px 15px 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .msg.user { margin-left: auto; text-align: right; }
+        .msg.user .txt { background: var(--blue); color: white; padding: 10px 15px; border-radius: 15px 15px 0 15px; display: inline-block;}
+
+        .chat-input-area {
+            padding: 10px; border-top: 1px solid #eee; display: flex; gap: 10px;
+        }
+        .chat-input-area input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+        .chat-input-area button {
+            width: 40px; height: 40px; background: var(--blue); color: white;
+            border: none; border-radius: 50%; cursor: pointer;
+        }
+
+        /* --- MODAL --- */
+        .modal-backdrop {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal-backdrop.active { opacity: 1; pointer-events: all; }
+        
+        .modal-window {
+            width: 90%; max-width: 600px; background: white;
+            border-radius: var(--radius); padding: 20px;
+            max-height: 80vh; overflow-y: auto;
+            transform: scale(0.9); transition: transform 0.3s;
+        }
+        .modal-backdrop.active .modal-window { transform: scale(1); }
+        .modal-top { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .hidden { display: none; }
+
+        .search-wrap { display: flex; align-items: center; background: #f1f1f1; padding: 10px; border-radius: 10px; margin-bottom: 15px; }
+        .search-wrap input { border: none; background: transparent; margin-left: 10px; width: 100%; outline: none; }
+        
+        .library-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .lib-card {
+            background: #f9f9f9; padding: 15px; border-radius: 10px;
+            display: flex; align-items: center; gap: 10px; cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .lib-card:hover { border-color: var(--blue); background: #fff; }
+        .lib-icon { color: var(--primary); }
+
+        /* --- STARTUP SCREEN STYLES --- */
+        .startup-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .startup-icon {
+            font-size: 4rem; color: var(--blue); margin-bottom: 20px;
+            /* Kept original pulse for startup icon */
+            animation: pulse 2s infinite;
+        }
+        .btn-grant {
+            background: var(--blue); color: white;
+            padding: 12px 30px; border: none; border-radius: 50px;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            margin-top: 20px; box-shadow: 0 5px 15px rgba(0,122,255,0.3);
+        }
+
+        /* --- BLOOD BANK GRID STYLES --- */
+        .blood-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .blood-btn {
+            aspect-ratio: 1;
+            background: #ffebee;
+            color: #d32f2f;
+            border: 1px solid #ffcdd2;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .blood-btn:hover { background: #d32f2f; color: white; }
+        .blood-btn:active { transform: scale(0.95); }
+
+        /* --- SPECIALIST LIST STYLES --- */
+        .doc-card {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            align-items: center;
+            border-left: 4px solid var(--blue);
+        }
+        .doc-img {
+            width: 50px; height: 50px;
+            background: #ddd; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; color: #666;
+        }
+        .doc-info h4 { margin: 0; font-size: 1rem; }
+        .doc-info p { margin: 2px 0; font-size: 0.8rem; color: #666; }
+        .doc-info .tag { background: #e3f2fd; color: var(--blue); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes ripple { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+        .slide-down { animation: slideDown 0.8s ease-out; }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+        
+        .scroll-reveal { opacity: 0; transform: translateY(20px); transition: 0.6s ease-out; }
+        .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* --- MEDIA QUERIES --- */
+        @media (max-width: 768px) {
+            .hero-grid { grid-template-columns: 1fr; text-align: center; }
+            .hero-content { order: 2; }
+            .hero-action { order: 1; margin-bottom: 20px; }
+            .select-row { grid-template-columns: 1fr; }
+            .grid-wrapper { grid-template-columns: repeat(2, 1fr); }
+            
+            .chat-interface {
+                width: 100%; height: 60vh;
+                bottom: 0; right: 0; left: 0;
+                border-radius: 20px 20px 0 0;
+            }
+            .library-grid { grid-template-columns: 1fr; }
+            .nav-links a:not(.btn-nav-emergency) { display: none; }
+            .blood-grid { grid-template-columns: repeat(3, 1fr); }
+            
+            .brand-footer h2 { font-size: 1.2rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-content h1 { font-size: 1.8rem; }
+            .sos-circle { width: 150px; height: 150px; }
+            .pulse-ring { width: 150px; height: 150px; }
+            .grid-wrapper { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body onload="initApp()">
+
+    <div id="startup-screen" class="startup-overlay">
+        <div class="startup-icon"><i class="fas fa-map-marked-alt"></i></div>
+        <h2>Allow Location Access</h2>
+        <p style="margin: 10px 0 20px; color: #666; max-width: 400px;">
+            To provide emergency help and find nearby hospitals, ResQNet needs to know your location.
+        </p>
+        <button class="btn-grant" onclick="enableLocation()">
+            <i class="fas fa-location-arrow"></i> Enable Location
+        </button>
+        <div style="margin-top: 15px; font-size: 0.9rem; color: #999; cursor: pointer;" onclick="closeStartup()">
+            Skip for now
+        </div>
+    </div>
+
+    <nav class="navbar slide-down">
+        <div class="container nav-wrapper">
+            <div class="brand">
+                <div class="design-r-logo">R</div>
+                <span>ResQNet</span>
+            </div>
+            <div class="nav-links">
+                <a href="#services">Services</a>
+                <a href="#" onclick="openModal('library')">First Aid Library</a>
+                <a href="tel:112" class="btn-nav-emergency">
+                    <i class="fas fa-phone-volume"></i> 112 Emergency
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero-section">
+            <div class="container hero-grid">
+                
+                <div class="hero-content fade-in-left">
+                    <div class="badge-status">
+                        <span class="status-dot"></span> System Online
+                    </div>
+                    <h1>Smart Immediate Help in <br><span class="highlight-text">Critical Moments.</span></h1>
+                    <p class="subtitle">AI-powered medical guidance. Auto-connects to your District Control Room instantly.</p>
+
+                    <div class="location-card bounce-in">
+                        <div class="card-header">
+                            <i class="fas fa-map-marker-alt"></i> 
+                            <span id="geo-status-text">Waiting for permission...</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="select-row">
+                                <div class="input-group">
+                                    <label>State (Rajya)</label>
+                                    <select id="state-select" onchange="handleStateChange()">
+                                        <option value="">-- Select State --</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>District (Zila)</label>
+                                    <select id="district-select" onchange="displayHelpline()">
+                                        <option value="">-- Select District --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div id="contact-display" class="contact-result hidden">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-action fade-in-right">
+                    <div class="sos-wrapper">
+                        <div class="pulse-ring"></div>
+                        <div class="pulse-ring delay"></div>
+                        <a href="tel:112" class="sos-circle">
+                            <h3>EMERGENCY</h3>
+                            <span class="sos-num">112</span>
+                            <span class="sos-sub">SOS</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="features-section">
+            <div class="container">
+                <div class="section-header scroll-reveal">
+                    <h2>Life Saving Tools</h2>
+                    <p>Click below for immediate action.</p>
+                </div>
+
+                <div class="grid-wrapper">
+                    
+                    <div class="feature-card scroll-reveal" onclick="openModal('map')">
+                        <div class="icon-box blue"><i class="fas fa-hospital-alt"></i></div>
+                        <h3>Nearest Hospital</h3>
+                        <p>Find Trauma Centers nearby.</p>
+                    </div>
+
+                    <div class="feature-card scroll-reveal" onclick="openModal('library')">
+                        <div class="icon-box orange"><i class="fas fa-book-medical"></i></div>
+                        <h3>Injury Guidence</h3>
+                        <p>Injuries (Hindi/English).</p>
+                    </div>
+
+                    <div class="feature-card scroll-reveal active-card" onclick="toggleChat()">
+                        <div class="icon-box purple"><i class="fas fa-user-nurse"></i></div>
+                        <h3>Warmt AI</h3>
+                        <p>Chat with our AI Medical Assistant.</p>
+                        <div class="live-tag">Active</div>
+                    </div>
+
+                    <div class="feature-card scroll-reveal" onclick="openModal('specialists')">
+                        <div class="icon-box green"><i class="fas fa-stethoscope"></i></div>
+                        <h3>Specialists</h3>
+                        <p>Top Doctors (Ortho, Neuro, Cardio).</p>
+                    </div>
+
+                    <div class="feature-card scroll-reveal" onclick="openModal('blood')">
+                        <div class="icon-box red"><i class="fas fa-burn"></i></div>
+                        <h3>Blood Bank</h3>
+                        <p>Check live blood availability.</p>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="brand-footer">
+        <h2>Right Hospital <span>•</span> Right Guidance <span>•</span> Right Time</h2>
+    </footer>
+
+    <div class="chat-float-btn bounce-in" onclick="toggleChat()">
+        <img src="https://cdn-icons-png.flaticon.com/512/4228/4228726.png" alt="Nurse AI">
+    </div>
+
+    <div class="chat-interface" id="chat-interface">
+        <div class="chat-header">
+            <div class="chat-meta">
+                <div class="avatar">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4228/4228726.png" alt="Nurse">
+                </div>
+                <div>
+                    <h4>Warmt AI</h4>
+                    <span>Medical Assistant</span>
+                </div>
+            </div>
+            <button onclick="toggleChat()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="msg bot">
+                <div class="txt">
+                    Namaste! 🙏 I am Nurse Warmt.<br>
+                    I can help you with <strong>First Aid steps</strong> and <strong>Emergency Contacts</strong>.<br><br>
+                    Tell me what happened? (e.g., "Snake bite", "Car accident", "Ramgarh hospital")
+                </div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Type injury name..." onkeypress="handleEnter(event)">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <div id="app-modal" class="modal-backdrop">
+        <div class="modal-window zoom-in">
+            <div class="modal-top">
+                <h3 id="modal-title">Title</h3>
+                <button onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div id="modal-map" class="modal-content hidden">
+                <iframe id="map-frame" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+
+            <div id="modal-library" class="modal-content hidden">
+                <div class="search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="lib-search" placeholder="Search (e.g. 'Cut', 'Burn', 'Jalnna')..." onkeyup="filterLibrary()">
+                </div>
+                <div id="library-grid" class="library-grid">
+                </div>
+            </div>
+
+            <div id="modal-blood" class="modal-content hidden">
+                <p style="color:#666; margin-bottom:10px;">Select required blood group to find donors:</p>
+                <div class="blood-grid">
+                    <div class="blood-btn" onclick="searchBlood('A+')">A+</div>
+                    <div class="blood-btn" onclick="searchBlood('A-')">A-</div>
+                    <div class="blood-btn" onclick="searchBlood('B+')">B+</div>
+                    <div class="blood-btn" onclick="searchBlood('B-')">B-</div>
+                    <div class="blood-btn" onclick="searchBlood('O+')">O+</div>
+                    <div class="blood-btn" onclick="searchBlood('O-')">O-</div>
+                    <div class="blood-btn" onclick="searchBlood('AB+')">AB+</div>
+                    <div class="blood-btn" onclick="searchBlood('AB-')">AB-</div>
+                </div>
+                <div id="blood-result" style="margin-top:20px; font-weight:600; color:var(--primary);"></div>
+            </div>
+
+            <div id="modal-specialists" class="modal-content hidden">
+                <h4 style="margin:10px 0; color:var(--primary);">Ramgarh Specialists (Local)</h4>
+                <div class="doc-card">
+                    <div class="doc-img"><i class="fas fa-user-md"></i></div>
+                    <div class="doc-info">
+                        <h4>Dr. S.P. Singh</h4>
+                        <span class="tag">General Physician</span>
+                        <p>Sadar Hospital, Ramgarh</p>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <div class="doc-img"><i class="fas fa-user-md"></i></div>
+                    <div class="doc-info">
+                        <h4>Dr. R.K. Jha</h4>
+                        <span class="tag">Child Specialist</span>
+                        <p>Hope Hospital, Ramgarh</p>
+                    </div>
+                </div>
+
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+
+                <h4 style="margin:10px 0; color:var(--blue);">Jharkhand Specialists (Ranchi/Jamshedpur)</h4>
+                <div class="doc-card">
+                    <div class="doc-img"><i class="fas fa-user-md"></i></div>
+                    <div class="doc-info">
+                        <h4>Dr. V.K. Kapoor</h4>
+                        <span class="tag">Neurologist</span>
+                        <p>RIMS, Ranchi</p>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <div class="doc-img"><i class="fas fa-user-md"></i></div>
+                    <div class="doc-info">
+                        <h4>Dr. Anjali Mishra</h4>
+                        <span class="tag">Cardiologist</span>
+                        <p>Medanta Hospital, Ranchi</p>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <div class="doc-img"><i class="fas fa-user-md"></i></div>
+                    <div class="doc-info">
+                        <h4>Dr. S.K. Pal</h4>
+                        <span class="tag">Orthopedic Surgeon</span>
+                        <p>TMH, Jamshedpur</p>
+                    </div>
+                </div>
+
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+
+                <p style="margin-bottom:15px; color:#666;">Top Specialists in India (Emergency Reference)</p>
+                
+                <h4 style="margin:10px 0; color:var(--blue);">Cardiology (Heart)</h4>
+                <div class="doc-card">
+                    <div class="doc-img"><i class="fas fa-user-md"></i></div>
+                    <div class="doc-info">
+                        <h4>Dr. Naresh Trehan</h4>
+                        <span class="tag">Cardiologist</span>
+                        <p>Medanta The Medicity, Gurugram</p>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <div class="doc-img"><i class="fas fa-user-md"></i></div>
+                    <div class="doc-info">
+                        <h4>Dr. Devi Prasad Shetty</h4>
+                        <span class="tag">Cardiothoracic Surgeon</span>
+                        <p>Narayana Health, Bengaluru</p>
+                    </div>
+                </div>
+
+                <h4 style="margin:10px 0; color:var(--blue);">Neurology (Brain)</h4>
+                <div class="doc-card">
+                    <div class="doc-img"><i class="fas fa-user-md"></i></div>
+                    <div class="doc-info">
+                        <h4>Dr. B.K. Misra</h4>
+                        <span class="tag">Neurosurgeon</span>
+                        <p>PD Hinduja Hospital, Mumbai</p>
+                    </div>
+                </div>
+                 <div class="doc-card">
+                    <div class="doc-img"><i class="fas fa-user-md"></i></div>
+                    <div class="doc-info">
+                        <h4>Dr. Sudhir Kumar</h4>
+                        <span class="tag">Neurologist</span>
+                        <p>Apollo Hospitals, Hyderabad</p>
+                    </div>
+                </div>
+
+                <h4 style="margin:10px 0; color:var(--blue);">Orthopedics (Bone)</h4>
+                <div class="doc-card">
+                    <div class="doc-img"><i class="fas fa-user-md"></i></div>
+                    <div class="doc-info">
+                        <h4>Dr. S.K.S. Marya</h4>
+                        <span class="tag">Orthopedic Surgeon</span>
+                        <p>Max Super Speciality, Delhi</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- 1. EXTENSIVE CONTACT DATABASE (All States & Specific Districts for JH, BR, UP) ---
+        
+        // Helper to generate generic contact if specific number unknown
+        const getCon = (code) => ({ police: "100 / 112", control: "100 / 112", hospital: "District Hospital" });
+
+        const contactDB = {
+            // --- JHARKHAND (All 24 Districts) ---
+            "Jharkhand": {
+                "Ranchi": { police: "0651-2211154", control: "100", hospital: "RIMS: 0651-2541533" },
+                "Ramgarh": { police: "06553-222223", control: "06553-261555", hospital: "Sadar Hosp: 06553-222002" },
+                "Bokaro": { police: "06542-242226", control: "100", hospital: "BGH: 06542-242850" },
+                "Dhanbad": { police: "0326-2311217", control: "100", hospital: "PMCH: 0326-2230465" },
+                "East Singhbhum (Jamshedpur)": { police: "0657-2238999", control: "100", hospital: "TMH: 0657-2223042" },
+                "Hazaribagh": { police: "06546-265177", control: "100" },
+                "Giridih": { police: "06532-222355", control: "100" },
+                "Deoghar": { police: "06432-232323", control: "100" },
+                "Palamu": { police: "06562-222400", control: "100" },
+                "West Singhbhum (Chaibasa)": { police: "06582-256333", control: "100" },
+                "Garhwa": { police: "06561-222226", control: "100" },
+                "Chatra": { police: "06541-222224", control: "100" },
+                "Dumka": { police: "06434-222226", control: "100" },
+                "Godda": { police: "06422-222226", control: "100" },
+                "Sahebganj": { police: "06436-222226", control: "100" },
+                "Pakur": { police: "06435-222226", control: "100" },
+                "Jamtara": { police: "06433-222226", control: "100" },
+                "Latehar": { police: "06565-222226", control: "100" },
+                "Koderma": { police: "06534-222226", control: "100" },
+                "Lohardaga": { police: "06526-222226", control: "100" },
+                "Gumla": { police: "06524-222226", control: "100" },
+                "Simdega": { police: "06525-222226", control: "100" },
+                "Khunti": { police: "06528-222226", control: "100" },
+                "Saraikela Kharsawan": { police: "06597-222226", control: "100" }
+            },
+
+            // --- BIHAR (All 38 Districts) ---
+            "Bihar": {
+                "Patna": { police: "0612-2219810", control: "100", hospital: "PMCH: 0612-2300080" },
+                "Gaya": { police: "0631-2222634", control: "100", hospital: "ANMMCH: 0631-2220144" },
+                "Muzaffarpur": { police: "0621-2212101", control: "100", hospital: "SKMCH" },
+                "Bhagalpur": { police: "0641-2400103", control: "100", hospital: "JLNMCH" },
+                "Nalanda (Bihar Sharif)": getCon(),
+                "Darbhanga": { police: "06272-222222", control: "100", hospital: "DMCH" },
+                "Purnia": getCon(),
+                "Begusarai": getCon(),
+                "Bhojpur (Ara)": getCon(),
+                "Katihar": getCon(),
+                "Munger": getCon(),
+                "Samastipur": getCon(),
+                "Saran (Chhapra)": getCon(),
+                "Vaishali (Hajipur)": getCon(),
+                "West Champaran (Bettiah)": getCon(),
+                "East Champaran (Motihari)": getCon(),
+                "Siwan": getCon(),
+                "Rohtas (Sasaram)": getCon(),
+                "Kaimur (Bhabua)": getCon(),
+                "Buxar": getCon(),
+                "Aurangabad": getCon(),
+                "Jehanabad": getCon(),
+                "Arwal": getCon(),
+                "Nawada": getCon(),
+                "Sheikhpura": getCon(),
+                "Lakhisarai": getCon(),
+                "Jamui": getCon(),
+                "Khagaria": getCon(),
+                "Madhepura": getCon(),
+                "Saharsa": getCon(),
+                "Supaul": getCon(),
+                "Kishanganj": getCon(),
+                "Araria": getCon(),
+                "Madhubani": getCon(),
+                "Sitamarhi": getCon(),
+                "Sheohar": getCon(),
+                "Gopalganj": getCon(),
+                "Banka": getCon()
+            },
+
+            // --- UTTAR PRADESH (All 75 Districts - Grouped) ---
+            "Uttar Pradesh": {
+                "Lucknow": { police: "9454400290", control: "112", hospital: "KGMU: 0522-2258880" },
+                "Noida (G.B. Nagar)": { police: "0120-2350100", control: "112", hospital: "Dist Hosp" },
+                "Kanpur Nagar": { police: "9454400282", control: "112", hospital: "LLR" },
+                "Varanasi": { police: "9454400286", control: "112", hospital: "BHU Trauma" },
+                "Prayagraj (Allahabad)": { police: "9454400284", control: "112" },
+                "Agra": { police: "9454400281", control: "112" },
+                "Ghaziabad": { police: "9454400268", control: "112" },
+                "Meerut": { police: "9454400276", control: "112" },
+                "Gorakhpur": { police: "9454400274", control: "112" },
+                "Bareilly": { police: "9454400259", control: "112" },
+                "Aligarh": getCon(), "Ayodhya (Faizabad)": getCon(), "Ambedkar Nagar": getCon(), "Amethi": getCon(), "Amroha": getCon(), "Auraiya": getCon(), "Azamgarh": getCon(), "Badaun": getCon(), "Baghpat": getCon(), "Bahraich": getCon(), "Ballia": getCon(), "Balrampur": getCon(), "Banda": getCon(), "Barabanki": getCon(), "Basti": getCon(), "Bhadohi": getCon(), "Bijnor": getCon(), "Bulandshahr": getCon(), "Chandauli": getCon(), "Chitrakoot": getCon(), "Deoria": getCon(), "Etah": getCon(), "Etawah": getCon(), "Farrukhabad": getCon(), "Fatehpur": getCon(), "Firozabad": getCon(), "Ghazipur": getCon(), "Gonda": getCon(), "Hamirpur": getCon(), "Hapur": getCon(), "Hardoi": getCon(), "Hathras": getCon(), "Jalaun": getCon(), "Jaunpur": getCon(), "Jhansi": getCon(), "Kannauj": getCon(), "Kanpur Dehat": getCon(), "Kasganj": getCon(), "Kaushambi": getCon(), "Kushinagar": getCon(), "Lakhimpur Kheri": getCon(), "Lalitpur": getCon(), "Maharajganj": getCon(), "Mahoba": getCon(), "Mainpuri": getCon(), "Mathura": getCon(), "Mau": getCon(), "Mirzapur": getCon(), "Moradabad": getCon(), "Muzaffarnagar": getCon(), "Pilibhit": getCon(), "Pratapgarh": getCon(), "Raebareli": getCon(), "Rampur": getCon(), "Saharanpur": getCon(), "Sambhal": getCon(), "Sant Kabir Nagar": getCon(), "Shahjahanpur": getCon(), "Shamli": getCon(), "Shravasti": getCon(), "Siddharthnagar": getCon(), "Sitapur": getCon(), "Sonbhadra": getCon(), "Sultanpur": getCon(), "Unnao": getCon()
+            },
+
+            // --- ALL OTHER STATES (Important Districts) ---
+            "Andhra Pradesh": { "Visakhapatnam": getCon(), "Vijayawada": getCon(), "Guntur": getCon(), "Tirupati": getCon(), "Kurnool": getCon() },
+            "Arunachal Pradesh": { "Itanagar": getCon(), "Tawang": getCon() },
+            "Assam": { "Guwahati": getCon(), "Silchar": getCon(), "Dibrugarh": getCon(), "Jorhat": getCon() },
+            "Chhattisgarh": { "Raipur": getCon(), "Bhilai": getCon(), "Bilaspur": getCon(), "Korba": getCon() },
+            "Delhi": { "New Delhi": { police: "011-23014046", control: "112" }, "North Delhi": getCon(), "South Delhi": getCon(), "West Delhi": getCon(), "East Delhi": getCon() },
+            "Goa": { "North Goa (Panaji)": getCon(), "South Goa (Margao)": getCon() },
+            "Gujarat": { "Ahmedabad": getCon(), "Surat": getCon(), "Vadodara": getCon(), "Rajkot": getCon() },
+            "Haryana": { "Gurugram": getCon(), "Faridabad": getCon(), "Panipat": getCon(), "Ambala": getCon() },
+            "Himachal Pradesh": { "Shimla": getCon(), "Manali": getCon(), "Dharamshala": getCon() },
+            "Karnataka": { "Bengaluru": { police: "100", control: "112", hospital: "Victoria" }, "Mysuru": getCon(), "Hubballi": getCon(), "Mangaluru": getCon() },
+            "Kerala": { "Thiruvananthapuram": getCon(), "Kochi": getCon(), "Kozhikode": getCon() },
+            "Madhya Pradesh": { "Bhopal": getCon(), "Indore": getCon(), "Gwalior": getCon(), "Jabalpur": getCon(), "Ujjain": getCon() },
+            "Maharashtra": { "Mumbai": { police: "100", control: "100" }, "Pune": { police: "100", control: "100" }, "Nagpur": getCon(), "Nashik": getCon(), "Aurangabad": getCon(), "Thane": getCon() },
+            "Manipur": { "Imphal": getCon() },
+            "Meghalaya": { "Shillong": getCon() },
+            "Mizoram": { "Aizawl": getCon() },
+            "Nagaland": { "Kohima": getCon(), "Dimapur": getCon() },
+            "Odisha": { "Bhubaneswar": getCon(), "Cuttack": getCon(), "Rourkela": getCon(), "Puri": getCon() },
+            "Punjab": { "Chandigarh": getCon(), "Ludhiana": getCon(), "Amritsar": getCon(), "Jalandhar": getCon() },
+            "Rajasthan": { "Jaipur": getCon(), "Jodhpur": getCon(), "Udaipur": getCon(), "Kota": getCon(), "Ajmer": getCon() },
+            "Sikkim": { "Gangtok": getCon() },
+            "Tamil Nadu": { "Chennai": getCon(), "Coimbatore": getCon(), "Madurai": getCon(), "Salem": getCon() },
+            "Telangana": { "Hyderabad": { police: "100", control: "112" }, "Warangal": getCon(), "Nizamabad": getCon() },
+            "Tripura": { "Agartala": getCon() },
+            "Uttarakhand": { "Dehradun": getCon(), "Haridwar": getCon(), "Nainital": getCon() },
+            "West Bengal": { "Kolkata": { police: "100", control: "100" }, "Howrah": getCon(), "Darjeeling": getCon(), "Siliguri": getCon(), "Asansol": getCon() },
+            "Jammu & Kashmir": { "Srinagar": getCon(), "Jammu": getCon() },
+            "Ladakh": { "Leh": getCon() }
+        };
+
+        const allStatesList = Object.keys(contactDB);
+
+        // --- 2. BILINGUAL FIRST AID DATABASE (Expanded to ~30 Items) ---
+        const firstAidDB = [
+            // ORIGINAL 15 ITEMS
+            { id: 1, title: "Snake Bite (Saamp ka katna)", tags: ["snake", "bite", "saamp", "poison"], steps: ["Keep patient calm (Ghabraye nahi).", "Immobilize the limb (Haath/Pair hilaye nahi).", "Keep bite below heart level.", "Do NOT suck poison.", "Go to hospital immediately."] },
+            { id: 2, title: "Heart Attack (Dil ka daura)", tags: ["heart", "chest pain", "dil"], steps: ["Make patient sit down.", "Call 112.", "Chew 300mg Aspirin.", "If unconscious, start CPR."] },
+            { id: 3, title: "Severe Cut (Gehra ghaav)", tags: ["cut", "bleeding", "khoon"], steps: ["Apply direct pressure with cloth.", "Elevate the wound.", "Do not remove soaked cloth, add more.", "Wrap tightly."] },
+            { id: 4, title: "Burn (Jalna)", tags: ["burn", "fire", "jalna"], steps: ["Pour cool water for 20 mins.", "No ice, No toothpaste.", "Cover with clean cloth.", "Go to hospital."] },
+            { id: 5, title: "Choking (Gala ghutna)", tags: ["choke", "food", "gala"], steps: ["Perform Heimlich Maneuver.", "Push hard on stomach above navel.", "Hit back 5 times."] },
+            { id: 6, title: "Bone Fracture (Haddi tutna)", tags: ["bone", "break", "haddi"], steps: ["Do not move the part.", "Apply ice pack wrapped in cloth.", "Support with splint (lakdi/gatta)."] },
+            { id: 7, title: "Dog Bite (Kutte ka katna)", tags: ["dog", "bite", "kutta"], steps: ["Wash with soap & water for 15 mins.", "Apply antiseptic.", "Get Rabies Injection ASAP."] },
+            { id: 8, title: "Fainting (Behosh hona)", tags: ["faint", "dizzy", "behosh"], steps: ["Lay person flat on back.", "Lift legs up.", "Loosen tight clothes.", "Check breathing."] },
+            { id: 9, title: "Electric Shock (Bijli ka current)", tags: ["shock", "current", "bijli"], steps: ["Turn off main switch.", "Do not touch person directly.", "Use wooden stick to separate.", "Start CPR if no breath."] },
+            { id: 10, title: "Nose Bleed (Naak se khoon)", tags: ["nose", "blood", "naak"], steps: ["Lean forward (Aage jhuke).", "Pinch soft part of nose.", "Breathe through mouth.", "Wait 10 mins."] },
+            { id: 11, title: "Heat Stroke (Loo lagna)", tags: ["sun", "heat", "loo"], steps: ["Move to shade.", "Put wet cloth on head.", "Give water with salt/sugar.", "Cool body down."] },
+            { id: 12, title: "Drowning (Paani mein dubna)", tags: ["water", "drown", "paani"], steps: ["Get out of water.", "Check breath.", "Start CPR immediately.", "Remove wet clothes."] },
+            { id: 13, title: "Car Accident (Sadak durghatna)", tags: ["car", "crash", "accident"], steps: ["Ensure safety first.", "Do not move injured (unless fire).", "Call 112.", "Stop bleeding."] },
+            { id: 14, title: "Amputation (Ang katna)", tags: ["finger", "cut off", "ang"], steps: ["Wrap cut part in cloth.", "Put in plastic bag.", "Put bag on ice.", "Take patient and part to hospital."] },
+            { id: 15, title: "Poisoning (Zeher)", tags: ["poison", "zeher"], steps: ["Identify the poison.", "Do NOT induce vomiting.", "Call ambulance.", "Take poison bottle to doctor."] },
+
+            // NEW ACCIDENT & TRAUMA ITEMS
+            { id: 16, title: "Head Injury (Sar ki chot)", tags: ["head", "brain", "concussion", "sar"], steps: ["Check for consciousness.", "Do NOT move if neck pain.", "Apply ice for swelling.", "Watch for vomiting or sleepiness.", "Go to hospital."] },
+            { id: 17, title: "Spinal Injury (Reedh ki haddi)", tags: ["spine", "back", "neck", "paralysis"], steps: ["Do NOT move the person.", "Support head on both sides.", "Call ambulance immediately.", "Keep patient flat and still."] },
+            { id: 18, title: "Helmet Removal (Helmet nikalna)", tags: ["helmet", "bike", "crash"], steps: ["Do NOT remove helmet unless airway is blocked.", "Requires two people to stabilize neck.", "Unstrap carefully.", "Support head constantly."] },
+            { id: 19, title: "Road Rash (Sadak ragad)", tags: ["rash", "abrasion", "skin", "scrape"], steps: ["Clean with clean water.", "Remove loose gravel gently.", "Apply antibiotic ointment.", "Cover with non-stick dressing."] },
+            { id: 20, title: "Impaled Object (Ghus jana)", tags: ["stab", "object", "glass", "knife"], steps: ["Do NOT pull the object out.", "Stabilize object with bulky dressing.", "Control bleeding around it.", "Transport to hospital."] },
+            { id: 21, title: "Internal Bleeding (Andruni chot)", tags: ["internal", "stomach", "bruise"], steps: ["Look for rigid/swollen belly.", "Keep patient warm.", "Do NOT give food or water.", "Rush to hospital immediately."] },
+            { id: 22, title: "Whiplash (Gardan ka jhatka)", tags: ["neck", "car", "jerk"], steps: ["Rest the neck immediately.", "Apply cold pack for 20 mins.", "Do not massage immediately.", "See a doctor for X-ray."] },
+            { id: 23, title: "Tooth Knocked Out (Daant tutna)", tags: ["tooth", "mouth", "dental"], steps: ["Pick tooth by crown (top), not root.", "Rinse gently with water.", "Put in milk or inside cheek.", "See dentist within 30 mins."] },
+            { id: 24, title: "Eye Injury (Aankh ki chot)", tags: ["eye", "chemical", "dust"], steps: ["Do NOT rub the eye.", "Wash with water for chemicals.", "Cover with rigid shield (cup).", "Do not remove embedded objects."] },
+            { id: 25, title: "Crush Injury (Dab jana)", tags: ["crush", "trapped", "heavy"], steps: ["Call 112 immediately.", "If trapped >15 mins, medical advice needed before release.", "Control bleeding.", "Keep patient warm."] },
+            { id: 26, title: "Airbag Burn (Airbag jalna)", tags: ["airbag", "burn", "car"], steps: ["Wash with cool water.", "Remove jewelry from area.", "Cover with clean cloth.", "Do not break blisters."] },
+            { id: 27, title: "Hypothermia (Thand lagna)", tags: ["cold", "freeze", "shiver"], steps: ["Move to warm place.", "Remove wet clothes.", "Wrap in blankets.", "Give warm sweet drink (if conscious)."] },
+            { id: 28, title: "Seizure (Mirgi/Daura)", tags: ["seizure", "fit", "shaking"], steps: ["Clear area of hard objects.", "Do NOT hold them down.", "Time the seizure.", "Place on side after it stops."] },
+            { id: 29, title: "Panic Attack (Ghabrahat)", tags: ["panic", "anxiety", "breath"], steps: ["Speak calmly.", "Ask them to breathe with you.", "Inhale 4 sec, Hold 7 sec, Exhale 8 sec.", "Move to quiet place."] },
+            { id: 30, title: "Chemical Splash (Chemical girna)", tags: ["acid", "chemical", "burn"], steps: ["Brush off dry powder first.", "Flush with water for 20 mins.", "Remove contaminated clothes.", "Call ambulance."] }
+        ];
+
+        // --- 3. ANIMATION OBSERVER ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        // --- 4. INIT & LOGIC (Updated for Start Screen) ---
+        let userLat = null;
+        let userLng = null;
+
+        function initApp() {
+            populateStateSelect();
+            renderLibrary();
+            document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+        }
+
+        // --- NEW: STARTUP SCREEN & LOCATION FIX ---
+        function enableLocation() {
+            if (!navigator.geolocation) {
+                alert("Geolocation is not supported by this browser.");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    // Success Case
+                    userLat = position.coords.latitude;
+                    userLng = position.coords.longitude;
+                    
+                    // Update visual status
+                    const statusText = document.getElementById('geo-status-text');
+                    statusText.innerText = "Active: " + userLat.toFixed(4) + ", " + userLng.toFixed(4);
+                    statusText.style.color = "#27ae60";
+                    
+                    closeStartup();
+                },
+                function (error) {
+                    // Error Case
+                    document.getElementById('geo-status-text').innerText = "Error: " + error.message;
+                    alert("Location error: " + error.message);
+                    closeStartup();
+                }
+            );
+        }
+
+        function closeStartup() {
+            document.getElementById('startup-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('startup-screen').style.display = 'none';
+            }, 500);
+        }
+
+        function populateStateSelect() {
+            const sel = document.getElementById('state-select');
+            allStatesList.sort().forEach(s => {
+                let opt = document.createElement('option');
+                opt.value = s; opt.textContent = s;
+                sel.appendChild(opt);
+            });
+        }
+
+        function handleStateChange() {
+            const state = document.getElementById('state-select').value;
+            const distSel = document.getElementById('district-select');
+            distSel.innerHTML = '<option value="">-- Select District --</option>';
+
+            if(contactDB[state]) {
+                Object.keys(contactDB[state]).sort().forEach(d => {
+                    let opt = document.createElement('option');
+                    opt.value = d; opt.textContent = d;
+                    distSel.appendChild(opt);
+                });
+            }
+        }
+
+        function displayHelpline() {
+            const state = document.getElementById('state-select').value;
+            const dist = document.getElementById('district-select').value;
+            const display = document.getElementById('contact-display');
+
+            if(state && dist && contactDB[state][dist]) {
+                const data = contactDB[state][dist];
+                display.innerHTML = `
+                    <div class="contact-card slide-up">
+                        <h5>${dist}, ${state}</h5>
+                        <div class="c-row"><span><i class="fas fa-user-shield"></i> Police SP:</span> <strong>${data.police}</strong></div>
+                        <div class="c-row"><span><i class="fas fa-phone-alt"></i> Control Room:</span> <strong>${data.control}</strong></div>
+                        ${data.hospital ? `<div class="c-row"><span><i class="fas fa-hospital"></i> Hospital:</span> <strong>${data.hospital}</strong></div>` : ''}
+                    </div>
+                `;
+                display.classList.remove('hidden');
+            }
+        }
+
+        // --- 5. AI CHAT LOGIC (Nurse Persona) ---
+        function toggleChat() {
+            document.getElementById('chat-interface').classList.toggle('active');
+        }
+
+        function handleEnter(e) { if(e.key === 'Enter') sendMessage(); }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const txt = input.value.trim().toLowerCase();
+            const chatBody = document.getElementById('chat-body');
+
+            if(!txt) return;
+
+            // User Message
+            chatBody.innerHTML += `<div class="msg user"><div class="txt">${input.value}</div></div>`;
+            input.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // AI Logic
+            setTimeout(() => {
+                let responseHTML = "";
+
+                // Find Contact
+                let locationMatch = null;
+                Object.keys(contactDB).forEach(s => {
+                    Object.keys(contactDB[s]).forEach(d => {
+                        if(txt.includes(d.toLowerCase())) locationMatch = contactDB[s][d];
+                    });
+                });
+
+                // Find Medical
+                let medicalMatch = firstAidDB.find(item => 
+                    item.title.toLowerCase().includes(txt) || 
+                    item.tags.some(tag => txt.includes(tag))
+                );
+
+                if (locationMatch) {
+                    responseHTML = `
+                        <strong>Here are the contacts you asked for:</strong><br>
+                        📞 Police: ${locationMatch.police}<br>
+                        🏥 Control: ${locationMatch.control}
+                    `;
+                } 
+                else if (medicalMatch) {
+                    let stepsHTML = medicalMatch.steps.map((s, i) => 
+                        `<div class="step-card"><strong>${i+1}.</strong> ${s}</div>`
+                    ).join('');
+                    
+                    responseHTML = `
+                        <strong>✅ Protocol: ${medicalMatch.title}</strong><br>
+                        <div class="steps-container">${stepsHTML}</div>
+                        <br><em>Call 112 if critical.</em>
+                    `;
+                } 
+                else {
+                    responseHTML = `I couldn't find that specific injury. Please try keywords like "Snake", "Burn", "Cut" or a City name.`;
+                }
+
+                chatBody.innerHTML += `<div class="msg bot"><div class="txt">${responseHTML}</div></div>`;
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 600);
+        }
+
+        // --- 6. MODAL & LIBRARY ---
+        function openModal(type) {
+            document.getElementById('app-modal').classList.add('active');
+            document.getElementById('modal-map').classList.add('hidden');
+            document.getElementById('modal-library').classList.add('hidden');
+            document.getElementById('modal-blood').classList.add('hidden');
+            document.getElementById('modal-specialists').classList.add('hidden'); // Reset
+
+            if(type === 'map') {
+                document.getElementById('modal-title').innerText = "Nearby Hospitals";
+                document.getElementById('modal-map').classList.remove('hidden');
+                
+                // --- FIX: UPDATED LIVE LOCATION MAP LOGIC ---
+                let mapUrl = "https://maps.google.com/maps?q=hospitals+near+me&t=&z=13&ie=UTF8&iwloc=&output=embed";
+                
+                if(userLat && userLng) {
+                    // Use coordinates to center map
+                    mapUrl = `https://maps.google.com/maps?q=hospitals&sll=${userLat},${userLng}&z=14&output=embed`;
+                }
+                document.getElementById('map-frame').src = mapUrl;
+            }
+            if(type === 'library') {
+                document.getElementById('modal-title').innerText = "First Aid Library (Hindi/English)";
+                document.getElementById('modal-library').classList.remove('hidden');
+            }
+            if(type === 'blood') {
+                document.getElementById('modal-title').innerText = "Find Blood Donor";
+                document.getElementById('modal-blood').classList.remove('hidden');
+                document.getElementById('blood-result').innerHTML = ""; 
+            }
+            // SPECIALISTS MODAL LOGIC
+            if(type === 'specialists') {
+                document.getElementById('modal-title').innerText = "Specialist Doctors";
+                document.getElementById('modal-specialists').classList.remove('hidden');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('app-modal').classList.remove('active');
+        }
+
+        // Search blood simulator
+        function searchBlood(type) {
+            document.getElementById('blood-result').innerHTML = `<i class="fas fa-spinner fa-spin"></i> Searching donors for <strong>${type}</strong>...`;
+            setTimeout(() => {
+                document.getElementById('blood-result').innerHTML = `<span style="color:green"><i class="fas fa-check-circle"></i> Found 3 donors for ${type} nearby!</span><br><small>Simulated: Hospital notified.</small>`;
+            }, 1500);
+        }
+
+        function renderLibrary() {
+            const grid = document.getElementById('library-grid');
+            grid.innerHTML = "";
+            firstAidDB.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'lib-card';
+                div.onclick = () => { 
+                    toggleChat(); 
+                    document.getElementById('chat-input').value = item.title.split(' ')[0];
+                    sendMessage();
+                    closeModal();
+                };
+                div.innerHTML = `
+                    <div class="lib-icon"><i class="fas fa-first-aid"></i></div>
+                    <h4>${item.title}</h4>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        function filterLibrary() {
+            const term = document.getElementById('lib-search').value.toLowerCase();
+            const cards = document.querySelectorAll('.lib-card');
+            cards.forEach(card => {
+                card.style.display = card.innerText.toLowerCase().includes(term) ? "flex" : "none";
+            });
+        }
+    </script>
+</body>
+</html>
